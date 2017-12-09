@@ -49,6 +49,7 @@ void NeuralNetwork::initialize(const VectorND<unsigned>& layerActsNum, const int
 	}
 }
 
+/*Activation functions*/
 double NeuralNetwork::getSigmoid(const double& x) {
 	return 1.0 / (1.0 + exp(-x));
 }
@@ -73,6 +74,7 @@ double NeuralNetwork::getLRELUGradFromY(const double& y) {
 	return y > 0.0 ? 1.0 : 0.01;
 }
 
+/*apply activate function*/
 void NeuralNetwork::applySigmoidToVector(VectorND<double>& vector) {
 	for (int i = 0; i < vector.numDimension - 1; i++)
 		vector[i] = getSigmoid(vector[i]);
@@ -88,6 +90,7 @@ void NeuralNetwork::applyLRELUToVector(VectorND<double>& vector) {
 		vector[i] = getLRELU(vector[i]);
 }
 
+/*forward propagation*/
 void NeuralNetwork::propForward() {
 	for (int i = 0; i < weights.numElements; i++) {
 		weights[i].multiply(layerNeuronAct[i], layerNeuronAct[i + 1]);
@@ -96,6 +99,7 @@ void NeuralNetwork::propForward() {
 	}
 }
 
+/*back propagation*/
 void NeuralNetwork::propBackward(const VectorND<double>& target) {
 	const int i = layerNeuronGrad.numElements - 1;
 
@@ -117,6 +121,7 @@ void NeuralNetwork::propBackward(const VectorND<double>& target) {
 	}
 }
 
+/*update weight (studing)*/
 void NeuralNetwork::updateWeight(Matrix<double>& weightMatrix, VectorND<double>& nextLayerGrad, VectorND<double>& prevLayerAct) {
 	for (int i = 0; i < weightMatrix.rows; i++) {
 		for (int j = 0; j < weightMatrix.cols; j++) {
@@ -127,6 +132,7 @@ void NeuralNetwork::updateWeight(Matrix<double>& weightMatrix, VectorND<double>&
 	}
 }
 
+/*put in input*/
 void NeuralNetwork::setInputVector(const VectorND<double>& input) {
 	if (input.numDimension < numInput)
 		std::cout << "wrong input" << std::endl;
@@ -136,6 +142,7 @@ void NeuralNetwork::setInputVector(const VectorND<double>& input) {
 	}
 }
 
+/*copy forward propagation output*/
 void NeuralNetwork::copyOutputVector(VectorND<double>& copy, bool copyBias) {
 	const VectorND<double>& outputLayerAct(layerNeuronAct[layerNeuronAct.numElements - 1]);
 

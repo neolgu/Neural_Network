@@ -8,9 +8,10 @@
 template<class T>
 class Arr1D {
 public:
-	int numElements;
+	int numElements; //element number
 	T *values;
 
+	/*constructor*/
 	Arr1D()
 		: numElements(0), values(nullptr)
 	{}
@@ -33,16 +34,18 @@ public:
 		initialize(arrInput);
 	}
 
+	/*destructor*/
 	~Arr1D() {
-		deleteArr(values);
+		if (values != nullptr) { delete[] values; values = nullptr; }
 
 		numElements = 0;
 	}
 
+	/*template initialize*/
 	void initialize(const int& numElementsInput) {
 		numElements = numElementsInput;
 
-		deleteArr(values);
+		if (values != nullptr) { delete[] values; values = nullptr; }
 
 		if (numElements > 0)
 			values = new T[numElements];
@@ -51,7 +54,7 @@ public:
 	void initialize(const int& numElementsInput, const T& valuesInput) {
 		numElements = numElementsInput;
 
-		deleteArr(values);
+		if (values != nullptr) { delete[] values; values = nullptr; }
 
 		if (numElements > 0) {
 			values = new T[numElements];
@@ -66,24 +69,18 @@ public:
 		copyFrom(arrInput);
 	}
 
-	void deleteArr(T *pointer) {
-		if (pointer != nullptr) { delete[] pointer; pointer = nullptr; }
-	}
-
+	//assign all values to input 
 	void assignAllValues(const T& input) {
 		for (int i = 0; i < numElements; i++) values[i] = input;
 	}
 
+	//assign values to inputs
 	void assignValues(const int startIndex, const int endIndex, const T& input)
 	{
 		for (int i = startIndex; i <= endIndex; i++) values_[i] = input;
 	}
 
-	void assignMin(const int index, const T& value) {
-		T &temp = *(values + index);
-		temp = MIN(value, temp);//수정해라
-	}
-
+	//copy array
 	void copyFrom(const Arr1D<T>& from) {
 		assert(numElements == from.numElements);
 
@@ -92,25 +89,10 @@ public:
 		for (int i = 0; i < numElements; i++) values[i] = fromVal[i];
 	}
 
-	void resize(const int newSize)
-	{
-		T *newValues = new T[newSize];
-
-		for (int i = 0; i < MIN2(newSize, numElements); i++) {
-			newValues[i] = values[i];
-		}
-
-		SWAP(values_, new_values, T*);//////
-
-		deleteArr(newValues);
-
-		numElements = newSize;
-	}
-
 	void freeMemory() {
 		numElements = 0;
 
-		deleteArr(values);
+		if (values != nullptr) { delete[] values; values = nullptr; }
 	}
 
 	T& operator [] (const int& i) const
@@ -132,66 +114,6 @@ public:
 
 	const int getSizeOfType() const {
 		return sizeof(T);
-	}
-
-	void compactArr(Arr1D<int>& flagArr, const int removeFlag) {
-		int newNumElements = 0;
-		for (int i = 0; i < numElements; i++) {
-			if (flagArr[i] != removeFlag) flagArr[i] = newNumElements++;
-		}
-
-		static Arr1D<T> temp;
-		temp.initialize(newNumElements);
-
-		for (int i = 0; i < numElements; i++) {
-			const int newIndex = flagArr[i];
-
-			if (newIndex == removeFlag) continue;
-
-			temp[newIndex] = values[i];
-		}
-
-		numElements = temp.numElements;
-		delegate[] values;
-		values = temp.values;
-
-		temp.numElements = 0;
-		temp.values = nullptr;
-	}
-
-	void copyToPartialArr(Arr1D<T>& dest, const int start, const int end) {
-		dest.initialize(end - start + 1);
-
-		for (int i_ = 0, i = start; i <= end; i++, i_++) {
-			dest.values[i_] = values[i];
-		}
-	}
-
-	void append(const Arr1D<T>& source) {
-		const int numTemp = numElements;
-
-		resize(numElements + source.numElements);
-
-		for (int i = numTemp; i < numElements; i++) {
-			values[i] = source.values[i - numTemp];
-		}
-	}
-
-	int searchIncremental(const T& v) {
-		for (int i = 0; i < numElements; i++) {
-			if (v < values[i]) return i - 1;
-		}
-
-		return numElements;
-	}
-
-	void accumulateFromLeft() {
-		T acc = (T)0;
-		for (int i = 0; i < numElements; i++) {
-			values[i] += acc;
-
-			acc = values[i];
-		}
 	}
 
 	friend std::ostream& operator<< (std::ostream& stream, const Arr1D<T>& arr) {
@@ -220,6 +142,7 @@ public:
 		}
 	}
 
+	/*Array operator*/
 	void operator *= (const T& constant) {
 		for (int i = 0; i < numElements; i++)
 			values[i] *= constant;

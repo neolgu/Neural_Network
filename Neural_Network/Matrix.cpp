@@ -2,13 +2,14 @@
 #include "Matrix.h"
 
 template<class T>
+/*initialize Matrix of (restruct Matrix)*/
 void Matrix<T>::initialize(const int& m, const int& n, const bool init = true) {
 	const int numAllOld = rows * cols;
 
 	rows = m;
 	cols = n;
 
-	deleteSafe(values);
+	if (values != nullptr) { delete[] values; values = nullptr; }
 
 	const int numAll = rows * cols;
 
@@ -24,11 +25,7 @@ void Matrix<T>::initialize(const int& m, const int& n, const bool init = true) {
 }
 
 template<class T>
-void Matrix<T>::deleteSafe(T *pointer) {
-	if (pointer != nullptr) { delete[] pointer; pointer = nullptr; }
-}
-
-template<class T>
+/*matrix multiply*/
 void Matrix<T>::multiply(const VectorND<T>& vector, VectorND<T>& result) const {
 	assert(rows <= result.numDimension);
 	assert(cols <= vector.numDimension);
@@ -48,7 +45,9 @@ void Matrix<T>::multiply(const VectorND<T>& vector, VectorND<T>& result) const {
 	}
 }
 
+
 template<class T>
+/*Transposed matrix multiply*/
 void Matrix<T>::multiplyTransposed(const VectorND<T>& vector, VectorND<T>& result) const {
 	assert(rows <= vector.numDimension);
 	assert(cols <= result.numDimension);
@@ -59,16 +58,6 @@ void Matrix<T>::multiplyTransposed(const VectorND<T>& vector, VectorND<T>& resul
 		for (int r = 0, i = c; r < rows; r++, i += cols) {
 			result.values[c] += values[i] * vector.values[r];
 		}
-	}
-}
-
-template<class T>
-void Matrix<T>::cout() {
-	for (int r = 0; r < rows; r++) {
-		for (int c = 0; c < cols; c++) {
-			std::cout << getValue(r, c) << " ";
-		}
-		std::cout << std::endl;
 	}
 }
 
@@ -85,6 +74,17 @@ int Matrix<T>::get1DIndex(const int& row, const int& col) const {
 template<class T>
 T& Matrix<T>::getValue(const int& row, const int& col) const{
 	return values[get1DIndex(row, col)];
+}
+
+template<class T>
+//overriding cout
+void Matrix<T>::cout() {
+	for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < cols; c++) {
+			std::cout << getValue(r, c) << " ";
+		}
+		std::cout << std::endl;
+	}
 }
 
 template class Matrix<float>;

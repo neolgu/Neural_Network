@@ -9,6 +9,7 @@ public:
 	int numDimension;
 	T *values;
 
+	/*constructor*/
 	VectorND()
 		: numDimension(0), values(nullptr)
 	{}
@@ -28,15 +29,17 @@ public:
 		for (int i = 0; i < numDimension; i++)	values[i] = vector[i];
 	}
 
+	/*destructor*/
 	~VectorND() {
 		if (values != 0) delete[] values;
 		numDimension = 0;
 	}
 
+	/*initialize*/
 	void initialize(const int& num, const bool initialize = false) {
 		numDimension = num;
 
-		deleteSafe(values);
+		if (values != nullptr) { delete[] values; values = nullptr; }
 
 		if (numDimension > 0) {
 			values = new T[numDimension];
@@ -46,15 +49,12 @@ public:
 		}
 	}
 
-	void deleteSafe(T* pointer) {
-		if (pointer != nullptr) { delete pointer; pointer = nullptr; }
-	}
-
+	/*overriding operator*/
 	void operator = (const VectorND<T>& from) {
 		if (from.numDimension != numDimension) {
 			numDimension = from.numDimension;
 
-			deleteSafe(values);
+			if (values != nullptr) { delete[] values; values = nullptr; }
 
 			values = new T[numDimension];
 		}
@@ -148,6 +148,7 @@ public:
 		return V;
 	}
 
+	/*copy vector partial*/
 	void copyPartial(const VectorND<T>& source, const int& startIndexThis, const int& startIndexSrc, const int& num) {
 		assert(startIndexThis >= 0);
 		assert(startIndexThis + num <= numDimension);
@@ -161,6 +162,7 @@ public:
 };
 
 template<class T>
+/*Vector dot product*/
 void dotProduct(const VectorND<T>& v1, const VectorND<T>& v2, T& sum) {
 	assert(v1.numDimension == v2.numDimension);
 
