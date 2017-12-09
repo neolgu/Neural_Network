@@ -2,11 +2,11 @@
 
 NeuralNetwork::NeuralNetwork() {};
 
-NeuralNetwork::NeuralNetwork(const int& inputNum, const int& outputNum, const int& hiddenNum) {
+NeuralNetwork::NeuralNetwork(const int inputNum, const int outputNum, const int hiddenNum) {
 	initialize(inputNum, outputNum, hiddenNum);
 }
 
-void NeuralNetwork::initialize(const int& inputNum, const int& outputNum, const int& hiddenNum) {
+void NeuralNetwork::initialize(const int inputNum, const int outputNum, const int hiddenNum) {
 	numLayerActs.initialize(hiddenNum + 2);
 
 	numLayerActs[0] = inputNum + 1;
@@ -19,24 +19,25 @@ void NeuralNetwork::initialize(const int& inputNum, const int& outputNum, const 
 	initialize(numLayerActs, hiddenNum);
 }
 
-void NeuralNetwork::initialize(const VectorND<unsigned>& layerActsNum, const int& hiddenNum) {
+void NeuralNetwork::initialize(const VectorND<unsigned>& layerActsNum, const int hiddenNum) {
 	numInput = layerActsNum[0] - 1;
 	numOutput = layerActsNum[hiddenNum + 1] - 1;
 	numLayers = hiddenNum + 2;
 
+	/*basic bias and learning rate*/
 	bias = 1;
 	alpha = 0.1;
 
 	//initialize layer
 	layerNeuronAct.initialize(numLayers);
-	for (int i = 0; i < numLayers; ++i) {
+	for (int i = 0; i < numLayers; i++) {
 		layerNeuronAct[i].initialize(layerActsNum[i], true);
 		layerNeuronAct[i][layerActsNum[i] - 1] = bias;
 	}
 
 	//initialize gradient
 	layerNeuronGrad.initialize(numLayers);
-	for (int i = 0; i < numLayers; ++i)
+	for (int i = 0; i < numLayers; i++)
 		layerNeuronGrad[i].initialize(numLayerActs[i], true);
 
 	//initialize weight
@@ -45,32 +46,32 @@ void NeuralNetwork::initialize(const VectorND<unsigned>& layerActsNum, const int
 		weights[i].initialize(layerNeuronAct[i + 1].numDimension - 1, layerNeuronAct[i].numDimension);
 		
 		for (int j = 0; j < weights[i].rows*weights[i].cols; j++)
-			weights[i].values[j] = (double)rand() / RAND_MAX * 0.1;
+			weights[i].values[j] = (double)rand() / RAND_MAX * 0.1;//first random weight
 	}
 }
 
 /*Activation functions*/
-double NeuralNetwork::getSigmoid(const double& x) {
+double NeuralNetwork::getSigmoid(const double x) {
 	return 1.0 / (1.0 + exp(-x));
 }
 
-double NeuralNetwork::getRELU(const double& x) {
+double NeuralNetwork::getRELU(const double x) {
 	return 0.0 < x ? x : 0.0;
 }
 
-double NeuralNetwork::getLRELU(const double& x) {
+double NeuralNetwork::getLRELU(const double x) {
 	return 0.0 < x ? x : 0.01 * x;
 }
 
-double NeuralNetwork::getSigmoidGradFromY(const double& y) {
+double NeuralNetwork::getSigmoidGradFromY(const double y) {
 	return (1.0 - y) * y;
 }
 
-double NeuralNetwork::getRELUGradFromY(const double& y) {
+double NeuralNetwork::getRELUGradFromY(const double y) {
 	return y > 0.0 ? 1.0 : 0;
 }
 
-double NeuralNetwork::getLRELUGradFromY(const double& y) {
+double NeuralNetwork::getLRELUGradFromY(const double y) {
 	return y > 0.0 ? 1.0 : 0.01;
 }
 
@@ -91,23 +92,27 @@ void NeuralNetwork::applyLRELUToVector(VectorND<double>& vector) {
 }
 
 /*forward propagation*/
-void NeuralNetwork::propForward() {
+void NeuralNetwork::forwardProp() {
 	for (int i = 0; i < weights.numElements; i++) {
 		weights[i].multiply(layerNeuronAct[i], layerNeuronAct[i + 1]);
 
-		applyRELUToVector(layerNeuronAct[i + 1]);
+		applyRELUToVector(layerNeuronAct[i + 1]);//apply activation function
+		//if you want another actfunction, change other
 	}
 }
 
-/*back propagation*/
-void NeuralNetwork::propBackward(const VectorND<double>& target) {
+/*back propagation (studing)*/
+void NeuralNetwork::backProp(const VectorND<double>& target) {
+	//output layer
 	const int i = layerNeuronGrad.numElements - 1;
 
 	for (int j = 0; j < layerNeuronGrad[i].numDimension - 1; j++) {
 		const double &outputValue(layerNeuronAct[i][j]);
 		layerNeuronGrad[i][j] = (target[j] - outputValue) * getRELUGradFromY(outputValue);
 	}
+	//
 
+	//hidden layer
 	for (int j = weights.numElements - 1; j >= 0; j--) {
 		weights[j].multiplyTransposed(layerNeuronGrad[j + 1], layerNeuronGrad[j]);
 
@@ -115,7 +120,9 @@ void NeuralNetwork::propBackward(const VectorND<double>& target) {
 			layerNeuronGrad[j][k] *= getLRELUGradFromY(layerNeuronAct[j][k]);
 		}
 	}
+	//
 
+	//update weight
 	for (int j = weights.numElements - 1; j >= 0; j--) {
 		updateWeight(weights[j], layerNeuronGrad[j + 1], layerNeuronAct[j]);
 	}
@@ -132,7 +139,7 @@ void NeuralNetwork::updateWeight(Matrix<double>& weightMatrix, VectorND<double>&
 	}
 }
 
-/*put in input*/
+/*put input*/
 void NeuralNetwork::setInputVector(const VectorND<double>& input) {
 	if (input.numDimension < numInput)
 		std::cout << "wrong input" << std::endl;

@@ -20,25 +20,25 @@ public:
 	VectorND<unsigned> numLayerActs;
 
 	NeuralNetwork();
-	NeuralNetwork(const int& inputNum, const int& outputNum, const int& hiddenNum);
+	NeuralNetwork(const int inputNum, const int outputNum, const int hiddenNum);
 
-	void initialize(const int& inputNum, const int& outputNum, const int& hiddenNum);
-	void initialize(const VectorND<unsigned>& layerActsNum, const int& hiddenNum);
+	void initialize(const int inputNum, const int outputNum, const int hiddenNum);
+	void initialize(const VectorND<unsigned>& layerActsNum, const int hiddenNum);
 
-	double getSigmoid(const double& x);
-	double getRELU(const double& x);
-	double getLRELU(const double& x);
+	double getSigmoid(const double x);
+	double getRELU(const double x);
+	double getLRELU(const double x);
 
-	double getSigmoidGradFromY(const double& y);
-	double getRELUGradFromY(const double& y);
-	double getLRELUGradFromY(const double& y);
+	double getSigmoidGradFromY(const double y);
+	double getRELUGradFromY(const double y);
+	double getLRELUGradFromY(const double y);
 
 	void applySigmoidToVector(VectorND<double>& vector);
 	void applyRELUToVector(VectorND<double>& vector);
 	void applyLRELUToVector(VectorND<double>& vector);
 
-	void propForward();
-	void propBackward(const VectorND<double>& target);
+	void forwardProp();
+	void backProp(const VectorND<double>& target);
 	void updateWeight(Matrix<double>& weightMatrix, VectorND<double>& nextLayerGrad, VectorND<double>& prevLayerAct);
 
 	void setInputVector(const VectorND<double>& input);

@@ -16,13 +16,13 @@ public:
 		: numElements(0), values(nullptr)
 	{}
 
-	Arr1D(const int& numElementsInput)
+	Arr1D(const int numElementsInput)
 		: numElements(0), values(nullptr)
 	{
 		initialize(numElementsInput);
 	}
 
-	Arr1D(const int& numElementsInput, const T& valuesInput)
+	Arr1D(const int numElementsInput, const T& valuesInput)
 		: numElements(0), values(nullptr)
 	{
 		initialize(numElementsInput, valuesInput);
@@ -42,7 +42,7 @@ public:
 	}
 
 	/*template initialize*/
-	void initialize(const int& numElementsInput) {
+	void initialize(const int numElementsInput) {
 		numElements = numElementsInput;
 
 		if (values != nullptr) { delete[] values; values = nullptr; }
@@ -51,7 +51,7 @@ public:
 			values = new T[numElements];
 	}
 
-	void initialize(const int& numElementsInput, const T& valuesInput) {
+	void initialize(const int numElementsInput, const T& valuesInput) {
 		numElements = numElementsInput;
 
 		if (values != nullptr) { delete[] values; values = nullptr; }
@@ -95,7 +95,7 @@ public:
 		if (values != nullptr) { delete[] values; values = nullptr; }
 	}
 
-	T& operator [] (const int& i) const
+	T& operator [] (const int i) const
 	{
 		assert(i >= 0);
 #ifndef NDEBUG
@@ -123,24 +123,24 @@ public:
 		return stream;
 	}
 
-	void read(std::ifstream& is) {
-		int numElements;
+	//void read(std::ifstream& is) {
+	//	int numElements;
 
-		is.read((char*)&numElements, sizeof(numElements));
+	//	is.read((char*)&numElements, sizeof(numElements));
 
-		initialize(numElements);
+	//	initialize(numElements);
 
-		for (int i = 0; i < numElements; i++)
-			is.read((char*)&values[i], sizeof(T));
-	}
+	//	for (int i = 0; i < numElements; i++)
+	//		is.read((char*)&values[i], sizeof(T));
+	//}
 
-	void write(std::ofstream& os) const {
-		os.write((char*)&numElements, sizeof(numElements));
+	//void write(std::ofstream& os) const {
+	//	os.write((char*)&numElements, sizeof(numElements));
 
-		for (int i = 0; i < numElements; i++) {
-			os.write((char*)&values[i], sizeof(T));
-		}
-	}
+	//	for (int i = 0; i < numElements; i++) {
+	//		os.write((char*)&values[i], sizeof(T));
+	//	}
+	//}
 
 	/*Array operator*/
 	void operator *= (const T& constant) {

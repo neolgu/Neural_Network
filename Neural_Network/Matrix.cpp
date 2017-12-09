@@ -3,7 +3,7 @@
 
 template<class T>
 /*initialize Matrix of (restruct Matrix)*/
-void Matrix<T>::initialize(const int& m, const int& n, const bool init = true) {
+void Matrix<T>::initialize(const int m, const int n, const bool init = true) {
 	const int numAllOld = rows * cols;
 
 	rows = m;
@@ -62,7 +62,8 @@ void Matrix<T>::multiplyTransposed(const VectorND<T>& vector, VectorND<T>& resul
 }
 
 template<class T>
-int Matrix<T>::get1DIndex(const int& row, const int& col) const {
+/*convert 1D array into 2D array*/
+int Matrix<T>::get1DIndex(const int row, const int col) const {
 	assert(row >= 0);
 	assert(col >= 0);
 	assert(row < rows);
@@ -72,7 +73,7 @@ int Matrix<T>::get1DIndex(const int& row, const int& col) const {
 }
 
 template<class T>
-T& Matrix<T>::getValue(const int& row, const int& col) const{
+T& Matrix<T>::getValue(const int row, const int col) const{
 	return values[get1DIndex(row, col)];
 }
 
@@ -87,5 +88,4 @@ void Matrix<T>::cout() {
 	}
 }
 
-template class Matrix<float>;
 template class Matrix<double>;

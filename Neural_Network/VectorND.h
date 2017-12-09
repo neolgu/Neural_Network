@@ -14,7 +14,7 @@ public:
 		: numDimension(0), values(nullptr)
 	{}
 
-	VectorND(const int& num) {
+	VectorND(const int num) {
 		values = 0;
 
 		initialize(num);
@@ -36,7 +36,7 @@ public:
 	}
 
 	/*initialize*/
-	void initialize(const int& num, const bool initialize = false) {
+	void initialize(const int num, const bool initialize = false) {
 		numDimension = num;
 
 		if (values != nullptr) { delete[] values; values = nullptr; }
@@ -62,14 +62,14 @@ public:
 		for (int i = 0; i < numDimension; i++) values[i] = from[i];
 	}
 
-	T& operator[](const int& i) const {
+	T& operator[](const int i) const {
 		assert(i >= 0);
 		assert(i < numDimension);
 
 		return values[i];
 	}
 
-	T& operator()(const int& i) const {
+	T& operator()(const int i) const {
 		assert(i >= 0);
 		assert(i < numDimension);
 
@@ -108,7 +108,7 @@ public:
 		for (int i = 0; i < numDimension; i++) values[i] *= s;
 	}
 
-	void operator *= (const int& s) {
+	void operator *= (const int s) {
 		for (int i = 0; i < numDimension; i++) values[i] *= s;
 	}
 
@@ -149,7 +149,7 @@ public:
 	}
 
 	/*copy vector partial*/
-	void copyPartial(const VectorND<T>& source, const int& startIndexThis, const int& startIndexSrc, const int& num) {
+	void copyPartial(const VectorND<T>& source, const int startIndexThis, const int startIndexSrc, const int num) {
 		assert(startIndexThis >= 0);
 		assert(startIndexThis + num <= numDimension);
 
@@ -161,16 +161,16 @@ public:
 	}
 };
 
-template<class T>
-/*Vector dot product*/
-void dotProduct(const VectorND<T>& v1, const VectorND<T>& v2, T& sum) {
-	assert(v1.numDimension == v2.numDimension);
-
-	sum = 0;
-
-	for (int i = 0; i < v1.numDimension; i++)
-		sum += v1.values[i] * v2.values[i];
-}
+//template<class T>
+///*Vector dot product*/
+//void dotProduct(const VectorND<T>& v1, const VectorND<T>& v2, T& sum) {
+//	assert(v1.numDimension == v2.numDimension);
+//
+//	sum = 0;
+//
+//	for (int i = 0; i < v1.numDimension; i++)
+//		sum += v1.values[i] * v2.values[i];
+//}
 
 template<class T>
 std::ostream& operator<<(std::ostream& output, const VectorND<T>& v) {

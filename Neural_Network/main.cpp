@@ -21,13 +21,13 @@ void main() {
 	for (int i = 0; i < 100; i++) {
 		nn.setInputVector(x);
 		
-		nn.propForward();
+		nn.forwardProp();
 
 		nn.copyOutputVector(yTemp);
 
 		std::cout << yTemp << std::endl;
 
-		nn.propBackward(yTarget);
+		nn.backProp(yTarget);
 	}
 	//getchar();
 }
