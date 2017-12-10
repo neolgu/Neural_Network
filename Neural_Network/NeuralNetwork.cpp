@@ -10,7 +10,7 @@ void NeuralNetwork::initialize(const int inputNum, const int outputNum, const in
 	numLayerActs.initialize(hiddenNum + 2);
 
 	numLayerActs[0] = inputNum + 1;
-	for (int i = 1; i < hiddenNum + 1; ++i) {
+	for (int i = 1; i < hiddenNum + 1; i++) {
 		numLayerActs[i] = inputNum + 1;
 	}
 

@@ -1,8 +1,2 @@
-﻿  Matrix.cpp
-c:\users\neolg\documents\github\neural_network\neural_network\matrix.cpp(6): warning C5037: 'Matrix<T>::initialize': 클래스 템플릿 멤버의 확장 정의에는 기본 인수가 포함될 수 없습니다.
-  코드를 생성하고 있습니다...
-  컴파일하고 있습니다...
-  main.cpp
-  NeuralNetwork.cpp
-  코드를 생성하고 있습니다...
+﻿  NeuralNetwork.cpp
   Neural_Network.vcxproj -> C:\Users\neolg\Documents\GitHub\Neural_Network\x64\Debug\Neural_Network.exe
