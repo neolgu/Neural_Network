@@ -108,10 +108,10 @@ public:
 		return values[i];
 	}
 
-	/*const int getSizeOfData() const {
+	const int getSizeOfData() const {
 		return numElements * sizeof(T);
 	}
-
+	/*
 	const int getSizeOfType() const {
 		return sizeof(T);
 	}*/

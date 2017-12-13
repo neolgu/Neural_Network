@@ -2,32 +2,96 @@
 #include "NeuralNetwork.h"
 
 void main() {
+	int inputNum, outputNum, hiddenNum;
+	float alphaValue;
+
+	printf("NeuralNetwork Setup\n");
+	printf("Enter input) Number of input, Number of output, Number of hidden layer, learning rate\n");
+	scanf_s("%d %d %d %f", &inputNum, &outputNum, &hiddenNum, &alphaValue);
+
 	//input vector
-	VectorND<double> x(2);
-	x[0] = x[1] = 0.0;
+	VectorND<double> x(inputNum);
 
 	//output (Desired outcome)
-	VectorND<double> yTarget(1);
-	yTarget[0] = 0.3f;
+	VectorND<double> yTarget(outputNum);
 
 	//output vector
-	VectorND<double> yTemp(1);
+	VectorND<double> yTemp(outputNum);
 
 	NeuralNetwork nn;
 
-	nn.initialize(2, 1, 3);//input num, outputnum, hidden layer num
-	nn.alpha = 0.1;//Learning rate
+	nn.initialize(inputNum, outputNum, hiddenNum);//input num, outputnum, hidden layer num
+	nn.alpha = alphaValue;//Learning rate
 
-	for (int i = 0; i < 100; i++) {
+	getchar();
+	char inputLocation[255];
+	printf("input file location : ");
+	gets_s(inputLocation, 255);
+
+	FILE *fp;
+	fopen_s(&fp, inputLocation, "r");
+	if (fp == NULL) {
+		printf("Location Error!\n");
+		return;
+	}
+
+	FILE *out;
+	fopen_s(&out, "output.txt", "w");
+	if (out == NULL)
+		return;
+
+	double *input = new double[inputNum];
+	double *output = new double[outputNum];
+
+	printf("Studing...\n");
+
+	int excutionIndex = 1;
+	while (!feof(fp)) {
+		for (int i = 0; i < inputNum; i++) {
+			fscanf_s(fp, "%lf", &input[i]);
+			x[i] = input[i];
+		}
+		for (int i = 0; i < outputNum; i++) {
+			fscanf_s(fp, "%lf", &output[i]);
+			yTarget[i] = output[i];
+		}
+
 		nn.setInputVector(x);
-		
+
 		nn.forwardProp();
 
 		nn.copyOutputVector(yTemp);
 
-		std::cout << yTemp << std::endl;
-
 		nn.backProp(yTarget);
+
+		int wnum = 1;
+		for (int j = 0; j < nn.weights.numElements; j++) {
+			for (int k = 0; k < nn.weights[j].rows*nn.weights[j].cols; k++) {
+				fprintf(out, "%d %d %f\n", excutionIndex++, wnum++, nn.weights[j].values[k]);
+			}
+		}
 	}
-	//getchar();
+	//그래프 실행
+
+
+	printf("complete\n");
+
+	printf("Enter the input value )\n");
+	for (int i = 0; i < inputNum; i++) {
+		scanf_s("%lf", &input[i]);
+		x[i] = input[i];
+	}
+
+	nn.setInputVector(x);
+	nn.forwardProp();
+	nn.copyOutputVector(yTemp);
+
+	printf("Output is\n");
+	std::cout << yTemp << std::endl;
+
+
+	delete[] input;
+	delete[] output;
+	fclose(fp);
+	fclose(out);
 }
