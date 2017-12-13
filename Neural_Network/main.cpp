@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Windows.h>
 #include "NeuralNetwork.h"
 
 void main() {
@@ -32,6 +33,7 @@ void main() {
 	fopen_s(&fp, inputLocation, "r");
 	if (fp == NULL) {
 		printf("Location Error!\n");
+		system("pause");
 		return;
 	}
 
@@ -71,6 +73,10 @@ void main() {
 			}
 		}
 	}
+
+	fclose(fp);
+	fclose(out);
+
 	//그래프 실행
 
 
@@ -92,6 +98,6 @@ void main() {
 
 	delete[] input;
 	delete[] output;
-	fclose(fp);
-	fclose(out);
+
+	system("pause");
 }
